@@ -40,9 +40,9 @@ import static org.junit.Assert.assertTrue;
 
 /**
  *  Unit tests for most of the testable utility methods
- *  and BlobSynchronizer class methods
+ *  and LocalFsBlobStoreSynchronizer class methods
  */
-public class BlobSynchronizerTest {
+public class LocalFsBlobStoreSynchronizerTest {
   private URI base;
   private File baseFile;
   private static Map<String, Object> conf = new HashMap();
@@ -82,7 +82,7 @@ public class BlobSynchronizerTest {
   @Test
   public void testBlobSynchronizerForKeysToDownload() {
     BlobStore store = initLocalFs();
-    BlobSynchronizer sync = new BlobSynchronizer(store, conf);
+    LocalFsBlobStoreSynchronizer sync = new LocalFsBlobStoreSynchronizer(store, conf);
     // test for keylist to download
     Set<String> zkSet = new HashSet<String>();
     zkSet.add("key1");

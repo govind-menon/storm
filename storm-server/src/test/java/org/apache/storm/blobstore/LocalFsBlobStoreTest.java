@@ -38,8 +38,10 @@ import org.apache.storm.generated.AuthorizationException;
 import org.apache.storm.generated.KeyAlreadyExistsException;
 import org.apache.storm.generated.KeyNotFoundException;
 import org.apache.storm.generated.SettableBlobMeta;
+import org.apache.storm.nimbus.NimbusInfo;
 import org.apache.storm.security.auth.NimbusPrincipal;
 import org.apache.storm.security.auth.SingleUserPrincipal;
+import org.apache.storm.testing.InProcessZookeeper;
 import org.apache.storm.utils.Utils;
 import org.junit.After;
 import org.junit.Before;
@@ -51,29 +53,41 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
 import java.nio.file.Files;
 
-public class BlobStoreTest {
-  private static final Logger LOG = LoggerFactory.getLogger(BlobStoreTest.class);
+public class LocalFsBlobStoreTest {
+  private static final Logger LOG = LoggerFactory.getLogger(LocalFsBlobStoreTest.class);
   URI base;
   File baseFile;
   private static Map<String, Object> conf = new HashMap();
   public static final int READ = 0x01;
   public static final int WRITE = 0x02;
   public static final int ADMIN = 0x04;
+  private InProcessZookeeper zk;
 
   @Before
   public void init() {
     initializeConfigs();
     baseFile = new File("target/blob-store-test-"+UUID.randomUUID());
     base = baseFile.toURI();
+    try {
+      zk = new InProcessZookeeper();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @After
   public void cleanup() throws IOException {
     FileUtils.deleteDirectory(baseFile);
+    try {
+      zk.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   // Method which initializes nimbus admin
@@ -149,9 +163,10 @@ public class BlobStoreTest {
     Mockito.doNothing().when(spy).checkForBlobUpdate("test-empty-subject-DEF");
     Mockito.doNothing().when(spy).checkForBlobUpdate("test-empty-acls");
     Map<String, Object> conf = Utils.readStormConfig();
+    conf.put(Config.STORM_ZOOKEEPER_PORT, zk.getPort());
     conf.put(Config.STORM_LOCAL_DIR, baseFile.getAbsolutePath());
     conf.put(Config.STORM_PRINCIPAL_TO_LOCAL_PLUGIN,"org.apache.storm.security.auth.DefaultPrincipalToLocal");
-    spy.prepare(conf, null, null);
+    spy.prepare(conf, null, mock(NimbusInfo.class));
     return spy;
   }
 
