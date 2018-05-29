@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 public class CLI {
     /**
-     * Parse function to return an Integer
+     * Parse function to return an Integer.
      */
     public static final Parse AS_INT = new Parse() {
         @Override
@@ -74,7 +74,7 @@ public class CLI {
         }
     };
     /**
-     * All values are returned as a map
+     * All values are returned as a map.
      */
     public static final Assoc INTO_MAP = new Assoc() {
         @Override
@@ -89,7 +89,7 @@ public class CLI {
     private static final Logger LOG = LoggerFactory.getLogger(CLI.class);
 
     /**
-     * Add an option to be parsed
+     * Add an option to be parsed.
      * @param shortName the short single character name of the option (no `-` character proceeds it).
      * @param longName the multi character name of the option (no `--` characters proceed it).
      * @param defaultValue the value that will be returned of the command if none is given. null if none is given.
@@ -100,7 +100,7 @@ public class CLI {
     }
 
     /**
-     * Add an option to be parsed
+     * Add an option to be parsed.
      * @param shortName the short single character name of the option (no `-` character proceeds it).
      * @param longName the multi character name of the option (no `--` characters proceed it).
      * @param defaultValue the value that will be returned of the command if none is given. null if none is given.
@@ -112,7 +112,7 @@ public class CLI {
     }
 
     /**
-     * Add an option to be parsed
+     * Add an option to be parsed.
      * @param shortName the short single character name of the option (no `-` character proceeds it).
      * @param longName the multi character name of the option (no `--` characters proceed it).
      * @param defaultValue the value that will be returned of the command if none is given. null if none is given.
@@ -175,7 +175,7 @@ public class CLI {
 
     public interface Assoc {
         /**
-         * Associate a value into somthing else
+         * Associate a value into somthing else.
          * @param current what to put value into, will be null if no values have been added yet.
          * @param value what to add
          * @return the result of combining the two
@@ -224,7 +224,7 @@ public class CLI {
         private final ArrayList<Arg> args = new ArrayList<>();
 
         /**
-         * Add an option to be parsed
+         * Add an option to be parsed.
          * @param shortName the short single character name of the option (no `-` character proceeds it).
          * @param longName the multi character name of the option (no `--` characters proceed it).
          * @param defaultValue the value that will be returned of the command if none is given. null if none is given.
@@ -235,7 +235,7 @@ public class CLI {
         }
 
         /**
-         * Add an option to be parsed
+         * Add an option to be parsed.
          * @param shortName the short single character name of the option (no `-` character proceeds it).
          * @param longName the multi character name of the option (no `--` characters proceed it).
          * @param defaultValue the value that will be returned of the command if none is given. null if none is given.
@@ -247,7 +247,7 @@ public class CLI {
         }
 
         /**
-         * Add an option to be parsed
+         * Add an option to be parsed.
          * @param shortName the short single character name of the option (no `-` character proceeds it).
          * @param longName the multi character name of the option (no `--` characters proceed it).
          * @param defaultValue the value that will be returned of the command if none is given. null if none is given.
