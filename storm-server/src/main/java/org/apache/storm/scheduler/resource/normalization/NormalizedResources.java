@@ -127,6 +127,16 @@ public class NormalizedResources {
      * Remove the other resources from this. This is the same as subtracting the resources in other from this.
      *
      * @param other the resources we want removed.
+     * @return true if the resources would have gone negative, but were clamped to 0.
+     */
+    public boolean remove(NormalizedResources other) {
+        return this.remove(other, null);
+    }
+
+    /**
+     * Remove the other resources from this. This is the same as subtracting the resources in other from this.
+     *
+     * @param other the resources we want removed.
      * @param resourceMetrics The resource related metrics
      * @return true if the resources would have gone negative, but were clamped to 0.
      */
@@ -135,7 +145,9 @@ public class NormalizedResources {
         this.cpu -= other.cpu;
         if (cpu < 0.0) {
             ret = true;
-            resourceMetrics.getNegativeResourceEventsMeter().mark();
+            if (resourceMetrics != null) {
+                resourceMetrics.getNegativeResourceEventsMeter().mark();
+            }
             cpu = 0.0;
         }
         int otherLength = other.otherResources.length;
@@ -144,7 +156,9 @@ public class NormalizedResources {
             otherResources[i] -= other.otherResources[i];
             if (otherResources[i] < 0.0) {
                 ret = true;
-                resourceMetrics.getNegativeResourceEventsMeter().mark();
+                if (resourceMetrics != null) {
+                    resourceMetrics.getNegativeResourceEventsMeter().mark();
+                }
                 otherResources[i]  = 0.0;
             }
         }

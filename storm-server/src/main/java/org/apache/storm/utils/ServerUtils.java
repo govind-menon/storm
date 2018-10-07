@@ -89,6 +89,12 @@ public class ServerUtils {
     public static final int SIGKILL = 9;
     public static final int SIGTERM = 15;
 
+    public static final String NUMA_MEMORY_IN_MB = "MemoryInMB";
+    public static final String NUMA_CORES = "Cores";
+    public static final String NUMAS_PORTS = "Ports";
+    public static final String NUMA_ID = "Id";
+    public static final String NUMAS_BASE = "Numas";
+
     // A singleton instance allows us to mock delegated static methods in our
     // tests by subclassing.
     private static ServerUtils _instance = new ServerUtils();
@@ -765,5 +771,31 @@ public class ServerUtils {
             }
             Utils.sleep(ATTEMPTS_INTERVAL_TIME);
         }
+    }
+
+    /**
+     * Validate supervisor numa configuration.
+     * @param stormConf stormConf
+     * @return getValidatedNumaMap
+     * @throws KeyNotFoundException
+     */
+    public static Map<String, Object> getValidatedNumaMap(Map<String, Object> stormConf) throws KeyNotFoundException {
+        Map<String, Object> validatedNumaMap = new HashMap();
+        Map<String, Object> supervisorNumaMap = (Map<String, Object>) stormConf.get(DaemonConfig.SUPERVISOR_NUMA_META);
+        if (supervisorNumaMap == null) return validatedNumaMap;
+        if (!supervisorNumaMap.containsKey(NUMAS_BASE)) {
+            throw new KeyNotFoundException("The numa configurations [" + NUMAS_BASE + "] is missing!");
+        }
+        List<Map> numaEntries = (List<Map>) supervisorNumaMap.get(NUMAS_BASE);
+        if (numaEntries == null) return validatedNumaMap;
+        for (Map numa : numaEntries) {
+            for (String key : new String[]{NUMA_ID, NUMA_CORES, NUMA_MEMORY_IN_MB, NUMAS_PORTS}) {
+                if (!numa.containsKey(key)) {
+                    throw new KeyNotFoundException("The numa configuration key [" + key + "] is missing!");
+                }
+            }
+            validatedNumaMap.put((String) numa.get(NUMA_ID), numa);
+        }
+        return validatedNumaMap;
     }
 }

@@ -29,6 +29,7 @@ import org.apache.storm.scheduler.resource.strategies.scheduling.IStrategy;
 import org.apache.storm.security.auth.IAuthorizer;
 import org.apache.storm.security.auth.IHttpCredentialsPlugin;
 import org.apache.storm.validation.ConfigValidation;
+import org.apache.storm.validation.ConfigValidationAnnotations;
 import org.apache.storm.validation.Validated;
 
 import static org.apache.storm.validation.ConfigValidationAnnotations.NotNull;
@@ -674,6 +675,18 @@ public class DaemonConfig implements Validated {
      */
     @isMapEntryType(keyType = String.class, valueType = String.class)
     public static final String SUPERVISOR_SCHEDULER_META = "supervisor.scheduler.meta";
+
+    /**
+     * A map with blobstore keys mapped to each NUMA Node on the supervisor that will be used
+     * by scheduler. CPUs, memory and ports available on each NUMA node will be provided.
+     * Each supervisor will have different map of NUMAs.
+     * Example: "supervisor.numa.meta": { "Numas": [
+     * {"Id": 0, "MemoryInMB": 122880, "Cores": [ 0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17],
+     *  "Ports": [6700, 6701]},
+     * {"Id": 1, "MemoryInMB": 122880, "Cores": [ 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23],
+     *  "Ports": [6702, 6703]}]}
+     */
+    public static final String SUPERVISOR_NUMA_META = "supervisor.numa.meta";
 
     /**
      * A list of ports that can run workers on this supervisor. Each worker uses one port, and the supervisor will only run one worker per
